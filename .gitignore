@@ -26,3 +26,6 @@ env/
 *.njsproj
 *.sln
 *.sw?
+
+#config api keys
+firebase-service.json
