@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   Card,
   CardAction,
@@ -7,61 +7,60 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {Link} from "react-router-dom"
-
+} from "@/components/ui/card";
+import { FaFacebook, FaGoogle, FaInstagram } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 const SignUp = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle style={{ fontSize: "32px", fontWeight: "bold",display: "flex", gap: "15px", justifyContent: "center"  }}>
-          Sign-Up
-        </CardTitle>
-        
-        <CardDescription>
-          <label htmlFor="Email"><b>Email: </b></label>
-          <input type="text" id="Email" name="Email" />
-          <br/>
-          <label htmlFor="Username"><b>Username: </b></label>
-          <input type="text" id="Username" name="Username" />
-          <br/>
-          <label htmlFor="pwd"><b>Password: </b></label>
-          <input type="password" id="pwd" name="pwd" />
-        </CardDescription>
-      </CardHeader>
+    <div className="flex w-full h-[100dvh] bg-blue-300 justify-center items-center">
+      <div className="w-3/4 h-3/4 flex">
+        <div className="w-1/2">
+          <img src="CampusLife.png" alt="Picture" className="h-full rounded-2xl w-full object-fill" />
+        </div>
+        <Card className="bg-slate-100 w-1/2">
+          <CardHeader>
+            <CardTitle className="p-3">Sign up</CardTitle>
+            <CardDescription>
+            <div className="flex flex-col p-2 gap-2 justify-around">
+              <Label>UserName</Label>
+              <Input placeholder="Enter your name:"></Input>
+              <Label>Password</Label>
+              <Input placeholder="Enter your password:"></Input>
+              <Label>Confirm Password</Label>
+              <Input placeholder="Enter your password again:"></Input>
+            </div>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center">
+              Or sign-up with
+            </div>
+            <div className="flex justify-center items-center pt-4 pb-2 gap-4">
+              <button className="rounded-full hover:border-2">
+                <FaGoogle className="w-8 h-8 p-2"/>
+              </button>
+                <button className="rounded-full hover:border-2">
+                <FaFacebook className="w-8 h-8 p-2"/>
+              </button>
+            <button className="rounded-full hover:border-2">
+                <FaInstagram className="w-8 h-8 p-2"/>
+              </button>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col">
+            <button>
+              Already have an account? |{" "}
+              <Link to={"/sign-in"} className="text-blue-700 underline">
+                <b>Login now</b>{" "}
+              </Link>{" "}
+            </button>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
+  );
+};
 
-      <p>Or Sign-Up with</p>
-      <CardContent style = {{ display: "flex", gap: "15px", justifyContent: "center" }}>
-        {/* Social Buttons */}
-        <a href="https://www.google.com" target="_blank" rel="noreferrer">
-          <button>
-            <img src="/images/google.png" alt="Google" style={{ width: "24px" }} />
-          </button>
-        </a>
-
-        <a href="https://facebook.com" target="_blank" rel="noreferrer">
-          <button>
-            <img src="/images/facebook.png" alt="Facebook" style={{ width: "24px" }} />
-          </button>
-        </a>
-
-        <a href="https://instagram.com" target="_blank" rel="noreferrer">
-          <button>
-            <img src="/images/insta.jpeg" alt="Instagram" style={{ width: "24px" }} />
-          </button>
-        </a>
-      </CardContent>
-
-      <CardFooter>
-        {/* ✅ Link to Sign-In Page */}
-        <p>Already have an account?  
-          <Link to="/sign-in" style={{ marginLeft: "5px", fontWeight: "bold" }}>
-            Sign In
-          </Link>
-        </p>
-      </CardFooter>
-    </Card>
-  )
-}
-
-export default SignUp
+export default SignUp;
