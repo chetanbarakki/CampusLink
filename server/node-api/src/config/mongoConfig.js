@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config({quiet : true});
+dotenv.config({ quiet: true });
 
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -15,7 +15,7 @@ export default async function connectDB() {
     await mongoose.connect(MONGO_URI);
 
     console.log("MongoDB connected:", mongoose.connection.host);
-  } catch (err) {
+  } catch (error) {
     console.error("MongoDB connection error:", err);
     process.exit(1);
   }

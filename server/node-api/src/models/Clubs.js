@@ -1,24 +1,33 @@
 import mongoose from "mongoose";
 
-const clubSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  desc: { type: String },
+const clubSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, unique: true },
+    description: { type: String, required: true },
+    leader: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+    members: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+        role: {
+          type: String,
+          enum: ["CLUB_MEMBER", "CLUB_LEADER"],
+          default: "CLUB_MEMBER",
+        },
+      },
+    ],
+    requests: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+        message: { type: String },
+        status: {
+          type: String,
+          enum: ["PENDING", "APPROVED", "REJECTED"],
+          default: "PENDING",
+        },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-  club_leaders: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
-      rank: { type: String },
-    },
-  ],
-
-  club_members: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
-      rank: { type: String },
-    },
-  ],
-
-  events_hosted: [{ type: mongoose.Schema.Types.ObjectId, ref: "Events" }],
-}, { timestamps: true });
-
-export default mongoose.model("Clubs", clubSchema);
+export default mongoose.model("Club", clubSchema);

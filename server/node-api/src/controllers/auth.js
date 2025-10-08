@@ -1,6 +1,7 @@
-import { createUser, findUserByEmail } from "./user.js";
+import { createUser, findUserByEmail } from "../db/user.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config({ quiet: true });
 
@@ -47,8 +48,9 @@ const handleUserLogin = async (req, res) => {
     const token = jwt.sign(
       {
         uid: user._id,
-        email: userData.email,
-        name: userData.name,
+        email: user.email,
+        name: user.name,
+        role: user.role,
       },
       JWT_SECRET,
       { expiresIn: 60 * 60 * 24 }
@@ -65,7 +67,7 @@ const handleUserLogin = async (req, res) => {
       .json({
         message: "User logged in successfully",
         data: {
-          id: user._id,
+          uid: user._id,
           name: user.name,
           email: user.email,
           role: user.role,
@@ -81,7 +83,7 @@ const handleUserLogout = (req, res) => {
   // clear cookie from browser
   res
     .status(200)
-    .clearCookie("auth-token", {
+    .clearCookie("auth_token", {
       httpOnly: true,
       secure: process.env.WORK_ENV === "production",
       sameSite: "strict",

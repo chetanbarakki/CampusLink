@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     batch: { type: String },
   },
 
-  role: { type: String, default: "student" },
+  role: { type: String, enum: ["USER", "ADMIN"], default: "USER" },
 
   club: [
     {

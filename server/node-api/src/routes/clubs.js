@@ -1,17 +1,20 @@
 import express from "express";
+import {
+  handleGetClubs,
+  handleGetClubById,
+  handleApplyForClub,
+  createClubController,
+} from "../controllers/club.js";
+import { authorizeRoles } from "../middlewares/authMiddleware.js";
 
 const clubRouter = express.Router();
 
-clubRouter.get("/", (req, res) => {
-  res.send("Here are all the clubs");
-});
+clubRouter.get("/", handleGetClubs);
 
-clubRouter.get("/:id", (req, res) => {
-  res.send("Here is the particular club");
-});
+clubRouter.get("/:id", handleGetClubById);
 
-clubRouter.post("/:id/interviews/apply", (req, res) => {
-    res.send("Applied for the club")
-});
+clubRouter.post("/:id/interviews/apply", handleApplyForClub);
+
+clubRouter.post("/add", authorizeRoles("ADMIN", "USER"), createClubController);
 
 export default clubRouter;
