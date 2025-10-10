@@ -1,33 +1,20 @@
-import { auth, db } from "../config/firebase-config.js";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { createUser, findUserByEmail } from "../db/user.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config({ quiet: true });
-
-const clientAuth = getAuth();
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
 const handleUserRegistration = async (req, res) => {
-  const { name, email, password } = req.body;
+  const userData = req.body;
 
-  if (!name || !email || !password)
-    return res.status(400).json({ error: "Missing required fields" });
+  if (!userData) return res.status(400).json({ error: "Empty User Data" });
 
   try {
-    // creating user in firebase authentication
-    const user = await auth.createUser({
-      email: email,
-      password: password,
-    });
-
-    // Db query to add user to firestore
-    await db.collection("users").doc(user.uid).set({
-      email: user.email,
-      name: name,
-      createdAt: new Date().toISOString(),
-    });
+    // add user entry
+    const user = await createUser(userData);
 
     // send successful register
     res
@@ -48,27 +35,22 @@ const handleUserLogin = async (req, res) => {
     return res.status(400).json({ error: "Missing email or password" });
 
   try {
-    // authenticate user using firebase auth -> method throws error if credentials are wrong
-    const userRecord = await signInWithEmailAndPassword(
-      clientAuth,
-      email,
-      password
-    );
-    const userId = userRecord.user.uid;
+    // find if user exists
+    const user = await findUserByEmail(email);
 
-    // get user details from db
-    const userDoc = await db.collection("users").doc(userId).get();
-    if (!userDoc.exists)
-      return res.status(401).json({ error: "User not found" });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-    const userData = userDoc.data();
+    // check password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
     // create a jwt token
     const token = jwt.sign(
       {
-        uid: userId,
-        email: userData.email,
-        name: userData.name,
+        uid: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
       },
       JWT_SECRET,
       { expiresIn: 60 * 60 * 24 }
@@ -82,7 +64,15 @@ const handleUserLogin = async (req, res) => {
         maxAge: 60 * 60 * 24 * 1000,
       })
       .status(200)
-      .json({ message: "User logged in successfully" });
+      .json({
+        message: "User logged in successfully",
+        data: {
+          uid: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      });
   } catch (error) {
     console.error("Error while log in", error);
     res.status(500).json({ error: "Failed to login: " + error.message });
@@ -93,7 +83,7 @@ const handleUserLogout = (req, res) => {
   // clear cookie from browser
   res
     .status(200)
-    .clearCookie("auth-token", {
+    .clearCookie("auth_token", {
       httpOnly: true,
       secure: process.env.WORK_ENV === "production",
       sameSite: "strict",
