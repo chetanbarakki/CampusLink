@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -9,10 +8,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FaFacebook, FaGoogle, FaInstagram } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-const SignIn = () => {
+import { Button } from "@/components/ui/button";
+import {apiClient} from "@/lib/apiClient";
+import { SIGNIN_ROUTE } from "@/lib/constants";
+const SignIn = ({setUserInfo}) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const validateLogin = () => {
+    if(email === "" || password === ""){
+      return false;
+    }
+    return true;
+  }
+  const handleLogin = async () => {
+    if(!validateLogin()) return;
+    const response = await apiClient.post(SIGNIN_ROUTE,{email,password},{withCredentials:true});
+    if(response.status === 200){
+      setUserInfo(response.data.data);
+      console.log(response.data);
+      
+      navigate("/");
+    }
+  }
   return (
     <div className="flex w-full h-[100dvh] bg-blue-300 justify-center items-center">
       <div className="w-3/4 h-3/4 flex">
@@ -28,10 +49,10 @@ const SignIn = () => {
             <CardTitle className="p-3">Sign in</CardTitle>
             <CardDescription>
               <div className="flex flex-col p-2 gap-2 justify-around">
-                <Label>UserName</Label>
-                <Input placeholder="Enter your name:"></Input>
+                <Label>Email</Label>
+                <Input placeholder="Enter your email:" onChange={(e) => setEmail(e.target.value)} value={email}></Input>
                 <Label>Password</Label>
-                <Input placeholder="Enter your password:"></Input>
+                <Input placeholder="Enter your password:" onChange={(e) => setPassword(e.target.value)} value={password}></Input>
               </div>
             </CardDescription>
           </CardHeader>
@@ -58,6 +79,7 @@ const SignIn = () => {
                 <b>Join Now</b>{" "}
               </Link>{" "}
             </button>
+            <Button className="flex flex-col mt-3 w-full bg-green-500 w-full " onClick={handleLogin}>Sign in</Button>
           </CardFooter>
         </Card>
       </div>
