@@ -1,20 +1,30 @@
 import mongoose from "mongoose";
 
-const eventSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  desc: { type: String, required: true },
+const eventSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    desc: { type: String },
 
-  host: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clubs" }],
+    host: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clubs" }],
 
-  event_leaders: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
-      rank: { type: String },
-    },
-  ],
+    participants_limit: { type: Number, default: 100 },
 
-  participants_limit: { type: Number, default: 100 },
-  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "Users" }],
-}, { timestamps: true });
+    event_leaders: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+        rank: { type: String },
+      },
+    ],
+
+    participants: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+        attended: { type: Boolean, default: false },
+        qrCode: { type: String },
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 export default mongoose.model("Events", eventSchema);

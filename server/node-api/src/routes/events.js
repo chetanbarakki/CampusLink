@@ -4,6 +4,7 @@ import {
   handleGetEventById,
   handleCreateEvent,
   handleRegisterEvent,
+  handleCheckIn,
 } from "../controllers/event.js";
 import {authorizeRoles} from "../middlewares/authMiddleware.js"
 
@@ -15,6 +16,8 @@ eventRouter.get("/:id", handleGetEventById);
 
 eventRouter.post("/:id/register", handleRegisterEvent);
 
-eventRouter.post("/create", authorizeRoles("ADMIN", "CLUB_LEADER"), handleCreateEvent);
+eventRouter.post("/:id/checkin", handleCheckIn);
+
+eventRouter.post("/create", authorizeRoles("ADMIN", "CLUB_LEADER", "USER"), handleCreateEvent);
 
 export default eventRouter;
