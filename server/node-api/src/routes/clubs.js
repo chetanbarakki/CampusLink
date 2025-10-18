@@ -15,6 +15,6 @@ clubRouter.get("/:id", handleGetClubById);
 
 clubRouter.post("/:id/interviews/apply", handleApplyForClub);
 
-clubRouter.post("/add", authorizeRoles("ADMIN", "USER"), createClubController);
+clubRouter.post("/add", authorizeRoles("ADMIN"), createClubController);
 
 export default clubRouter;

@@ -41,7 +41,9 @@ export const handleRegisterEvent = async (req, res) => {
     // register with the necessary details - user id, event id, date...
     // on success create a qr with the same details and send
     const event = await registerEvent(req.params.id, req.user.uid);
-    res.status(200).json({ message: "Registered successfully", event });
+    res
+      .status(200)
+      .json({ message: "Registered successfully", eventKey: event });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -50,9 +52,9 @@ export const handleRegisterEvent = async (req, res) => {
 export const handleCheckIn = async (req, res) => {
   try {
     const eventId = req.params.id;
-    const userId = req.user.uid;
-    const result = await markAttendance(eventId, userId);
-    res.status(200).json(result);
+    const eventKey = req.query.eventKey;
+    const result = await markAttendance(eventId, eventKey);
+    res.status(200).json({ message: "Attendance Marked Successfully" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

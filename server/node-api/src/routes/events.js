@@ -18,6 +18,6 @@ eventRouter.post("/:id/register", handleRegisterEvent);
 
 eventRouter.post("/:id/checkin", handleCheckIn);
 
-eventRouter.post("/create", authorizeRoles("ADMIN", "CLUB_LEADER", "USER"), handleCreateEvent);
+eventRouter.post("/create", authorizeRoles("ADMIN", "CLUB_LEADER"), handleCreateEvent);
 
 export default eventRouter;

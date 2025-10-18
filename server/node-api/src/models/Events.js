@@ -4,6 +4,7 @@ const eventSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     desc: { type: String },
+    eventDate: { type: Date },
 
     host: [{ type: mongoose.Schema.Types.ObjectId, ref: "Clubs" }],
 
@@ -20,7 +21,8 @@ const eventSchema = new mongoose.Schema(
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
         attended: { type: Boolean, default: false },
-        qrCode: { type: String },
+        // qrCode: { type: String },
+        eventKey: { type: String },
       },
     ],
   },
